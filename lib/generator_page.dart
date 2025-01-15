@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -223,7 +222,6 @@ END:VCARD''';
             _buildInputFields(),
             const SizedBox(height: 20),
             ElevatedButton(
-
               onPressed: () {
                 setState(() {
                   data = _formatDataBasedOnType();
@@ -233,45 +231,7 @@ END:VCARD''';
             ),
             if (data.isNotEmpty) ...[
               const SizedBox(height: 30),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      RepaintBoundary(
-                        key: _qrKey,
-                        child: QrImageView(
-                          data: data,
-                          version: QrVersions.auto,
-                          size: 200,
-                          backgroundColor: backgroundColor,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildActionButton(
-                            icon: Icons.color_lens,
-                            label: 'Color',
-                            onTap: () => _showColorPicker(context),
-                          ),
-                          _buildActionButton(
-                            icon: Icons.save_alt,
-                            label: 'Save',
-                            onTap: _captureAndSavePng,
-                          ),
-                          _buildActionButton(
-                            icon: Icons.share,
-                            label: 'Share',
-                            onTap: _shareQRCode,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _buildQRCode(),
             ],
           ],
         ),
@@ -310,8 +270,9 @@ END:VCARD''';
           children: [
             _buildTextField(
               controller: _wifiNameController,
-              label: 'WiFi Name (SSID)',
+              label: 'Network Name (SSID)',
               icon: Icons.wifi,
+              hint: 'Enter WiFi network name',
             ),
             const SizedBox(height: 10),
             TextField(
@@ -319,13 +280,14 @@ END:VCARD''';
               obscureText: _obscurePassword,
               decoration: InputDecoration(
                 labelText: 'Password',
+                hintText: 'Enter WiFi password',
                 prefixIcon: const Icon(Icons.lock),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
                 suffixIcon: IconButton(
                   icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
                 ),
               ),
             ),
@@ -381,52 +343,70 @@ END:VCARD''';
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    String hint = '',
   }) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
+        hintText: hint,
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
         ),
       ),
     );
   }
-//
-//   void _showColorPicker(BuildContext context) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text('Customize Colors'),
-//           content: SingleChildScrollView(
-//             child: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 const Text('QR Code Color'),
-//                 ColorPicker(
-//                   pickerColor: qrColor,
-//                   onColorChanged: (Color color) => setState(() => qrColor = color),
-//                 ),
-//                 const Divider(),
-//                 const Text('Background Color'),
-//                 ColorPicker(
-//                   pickerColor: backgroundColor,
-//                   onColorChanged: (Color color) =>
-//                       setState(() => backgroundColor = color),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.of(context).pop(),
-//               child: const Text('Done'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
+
+  Widget _buildQRCode() {
+    if (data.isEmpty) return const SizedBox.shrink();
+    
+    return Card(
+      elevation: 8,
+      shadowColor: Theme.of(context).primaryColor.withOpacity(0.3),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            RepaintBoundary(
+              key: _qrKey,
+              child: QrImageView(
+                data: data,
+                version: QrVersions.auto,
+                size: 200,
+                backgroundColor: backgroundColor,
+                foregroundColor: qrColor,
+                errorCorrectionLevel: QrErrorCorrectLevel.H,
+                embeddedImage: const AssetImage('assets/app_icon.png'),
+                embeddedImageStyle: QrEmbeddedImageStyle(
+                  size: const Size(40, 40),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildActionButton(
+                  icon: Icons.color_lens,
+                  label: 'Style',
+                  onTap: () => _showColorPicker(context),
+                ),
+                _buildActionButton(
+                  icon: Icons.save_alt,
+                  label: 'Save',
+                  onTap: _captureAndSavePng,
+                ),
+                _buildActionButton(
+                  icon: Icons.share,
+                  label: 'Share',
+                  onTap: _shareQRCode,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -20,6 +20,21 @@ class _ScannerPageState extends State<ScannerPage> {
       children: [
         MobileScanner(
           controller: cameraController,
+          errorBuilder: (context, error, child) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, color: Colors.red, size: 50),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error: ${error.toString()}',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+            );
+          },
           onDetect: (capture) {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
@@ -78,6 +93,7 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void _handleScannedCode(String code) {
+    HapticFeedback.mediumImpact();
     showDialog(
       context: context,
       builder: (BuildContext context) {
