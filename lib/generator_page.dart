@@ -14,22 +14,137 @@ import 'app_theme.dart';
 
 enum QRType {
   text,
-  email,
   url,
+  email,
   phone,
   wifi,
   vCard,
-  // New Types
-  calendar,
-  location,
-  cryptocurrency,
-  socialMedia,
-  menu,
   businessCard,
+  socialMedia,
+  location,
+  calendar,
+  cryptocurrency,
+  menu,
   pdf,
-  audio,
   whatsapp,
-  telegram,
+  telegram
+}
+
+class QRTypeInfo {
+  final QRType type;
+  final IconData icon;
+  final String label;
+  final String hint;
+
+  const QRTypeInfo({
+    required this.type,
+    required this.icon,
+    required this.label,
+    required this.hint,
+  });
+}
+
+final List<QRTypeInfo> qrTypes = [
+  QRTypeInfo(
+    type: QRType.text,
+    icon: Icons.text_fields,
+    label: 'Text',
+    hint: 'Enter any text',
+  ),
+  QRTypeInfo(
+    type: QRType.url,
+    icon: Icons.link,
+    label: 'URL',
+    hint: 'Enter website URL',
+  ),
+  QRTypeInfo(
+    type: QRType.email,
+    icon: Icons.email,
+    label: 'Email',
+    hint: 'Enter email address',
+  ),
+  QRTypeInfo(
+    type: QRType.phone,
+    icon: Icons.phone,
+    label: 'Phone',
+    hint: 'Enter phone number',
+  ),
+  QRTypeInfo(
+    type: QRType.wifi,
+    icon: Icons.wifi,
+    label: 'WiFi',
+    hint: 'Enter WiFi details',
+  ),
+  QRTypeInfo(
+    type: QRType.businessCard,
+    icon: Icons.contact_page,
+    label: 'Business Card',
+    hint: 'Create digital business card',
+  ),
+  QRTypeInfo(
+    type: QRType.location,
+    icon: Icons.location_on,
+    label: 'Location',
+    hint: 'Share a location',
+  ),
+  QRTypeInfo(
+    type: QRType.whatsapp,
+    icon: Icons.call_end_rounded,
+    label: 'WhatsApp',
+    hint: 'Share WhatsApp contact',
+  ),
+];
+
+class QRStyle {
+  final Color foregroundColor;
+  final Color backgroundColor;
+  final double cornerRadius;
+  final double dotScale;
+  final bool useGradient;
+  final Color? gradientColor1;
+  final Color? gradientColor2;
+  final String? logoPath;
+  final QrEyeStyle eyeStyle;
+  final QrDataModuleStyle  dataModuleStyle;
+
+   QRStyle({
+    this.foregroundColor = Colors.black,
+    this.backgroundColor = Colors.white,
+    this.cornerRadius = 0,
+    this.dotScale = 1,
+    this.useGradient = false,
+    this.gradientColor1,
+    this.gradientColor2,
+    this.logoPath,
+    this.eyeStyle = const QrEyeStyle(eyeShape: QrEyeShape.square),
+    this.dataModuleStyle = const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square),
+  });
+
+  QRStyle copyWith({
+    Color? foregroundColor,
+    Color? backgroundColor,
+    double? cornerRadius,
+    double? dotScale,
+    bool? useGradient,
+    Color? gradientColor1,
+    Color? gradientColor2,
+    String? logoPath,
+    QrEyeStyle? eyeStyle,
+    QrDataModuleStyle? dataModuleStyle,
+  }) {
+    return QRStyle(
+      foregroundColor: foregroundColor ?? this.foregroundColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      cornerRadius: cornerRadius ?? this.cornerRadius,
+      dotScale: dotScale ?? this.dotScale,
+      useGradient: useGradient ?? this.useGradient,
+      gradientColor1: gradientColor1 ?? this.gradientColor1,
+      gradientColor2: gradientColor2 ?? this.gradientColor2,
+      logoPath: logoPath ?? this.logoPath,
+      eyeStyle: eyeStyle ?? this.eyeStyle,
+      dataModuleStyle: dataModuleStyle ?? this.dataModuleStyle,
+    );
+  }
 }
 
 class GeneratorPage extends StatefulWidget {
@@ -73,14 +188,7 @@ class _GeneratorPageState extends State<GeneratorPage> {
   Color gradientColor1 = Colors.blue;
   Color gradientColor2 = Colors.purple;
 
-  List<Map<String, dynamic>> qrTypes = [
-    {'type': QRType.text, 'icon': Icons.text_fields, 'label': 'Text'},
-    {'type': QRType.url, 'icon': Icons.link, 'label': 'URL'},
-    {'type': QRType.email, 'icon': Icons.email, 'label': 'Email'},
-    {'type': QRType.phone, 'icon': Icons.phone, 'label': 'Phone'},
-    {'type': QRType.wifi, 'icon': Icons.wifi, 'label': 'WiFi'},
-    {'type': QRType.vCard, 'icon': Icons.contact_page, 'label': 'vCard'},
-  ];
+  var qrStyle = QRStyle();
 
   Future<void> _captureAndSavePng() async {
     try {
@@ -205,6 +313,58 @@ END:VCARD''';
     // Implementation for custom logo
   }
 
+  void _showStyleDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Style QR Code'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ColorPicker(
+              pickerColor: qrStyle.foregroundColor,
+              onColorChanged: (color) => setState(() {
+                qrStyle = qrStyle.copyWith(foregroundColor: color);
+              }),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Done'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit QR Code'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Slider(
+              value: qrStyle.dotScale,
+              min: 0.5,
+              max: 1.5,
+              onChanged: (value) => setState(() {
+                qrStyle = qrStyle.copyWith(dotScale: value);
+              }),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Done'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -230,18 +390,18 @@ END:VCARD''';
                 scrollDirection: Axis.horizontal,
                 itemCount: qrTypes.length,
                 itemBuilder: (context, index) {
-                  final type = qrTypes[index];
+                  final typeInfo = qrTypes[index];
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedQRType = type['type'];
+                        selectedQRType = typeInfo.type;
                       });
                     },
                     child: Container(
                       width: 80,
                       margin: const EdgeInsets.only(right: 15),
                       decoration: BoxDecoration(
-                        color: selectedQRType == type['type']
+                        color: selectedQRType == typeInfo.type
                             ? Theme.of(context).primaryColor
                             : Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(AppTheme.borderRadius),
@@ -250,16 +410,16 @@ END:VCARD''';
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            type['icon'],
-                            color: selectedQRType == type['type']
+                            typeInfo.icon,
+                            color: selectedQRType == typeInfo.type
                                 ? Theme.of(context).scaffoldBackgroundColor
                                 : Theme.of(context).textTheme.bodyLarge?.color,
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            type['label'],
+                            typeInfo.label,
                             style: TextStyle(
-                              color: selectedQRType == type['type']
+                              color: selectedQRType == typeInfo.type
                                   ? Theme.of(context).scaffoldBackgroundColor
                                   : Theme.of(context).textTheme.bodyLarge?.color,
                             ),
@@ -284,7 +444,7 @@ END:VCARD''';
             ),
             if (data.isNotEmpty) ...[
               const SizedBox(height: 30),
-              _buildQRCode(),
+              _buildQRPreview(),
             ],
           ],
         ),
@@ -411,9 +571,7 @@ END:VCARD''';
     );
   }
 
-  Widget _buildQRCode() {
-    if (data.isEmpty) return const SizedBox.shrink();
-    
+  Widget _buildQRPreview() {
     return Card(
       elevation: 8,
       shadowColor: Theme.of(context).primaryColor.withOpacity(0.3),
@@ -427,12 +585,16 @@ END:VCARD''';
                 data: data,
                 version: QrVersions.auto,
                 size: 200,
-                backgroundColor: backgroundColor,
-                foregroundColor: qrColor,
+                backgroundColor: qrStyle.backgroundColor,
+                foregroundColor: qrStyle.foregroundColor,
                 errorCorrectionLevel: QrErrorCorrectLevel.H,
-                embeddedImage: const AssetImage('assets/app_icon.png'),
-                embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(40, 40),
+                eyeStyle: qrStyle.eyeStyle,
+                dataModuleStyle: qrStyle.dataModuleStyle,
+                embeddedImage: qrStyle.logoPath != null 
+                  ? AssetImage(qrStyle.logoPath!) 
+                  : null,
+                embeddedImageStyle: const QrEmbeddedImageStyle(
+                  size: Size(40, 40),
                 ),
               ),
             ),
@@ -441,9 +603,9 @@ END:VCARD''';
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildActionButton(
-                  icon: Icons.color_lens,
+                  icon: Icons.palette,
                   label: 'Style',
-                  onTap: () => _showColorPicker(context),
+                  onTap: _showStyleDialog,
                 ),
                 _buildActionButton(
                   icon: Icons.save_alt,
@@ -454,6 +616,11 @@ END:VCARD''';
                   icon: Icons.share,
                   label: 'Share',
                   onTap: _shareQRCode,
+                ),
+                _buildActionButton(
+                  icon: Icons.edit,
+                  label: 'Edit',
+                  onTap: _showEditDialog,
                 ),
               ],
             ),

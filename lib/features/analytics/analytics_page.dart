@@ -182,13 +182,17 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Time Distribution',
-                            style: Theme.of(context).textTheme.titleLarge,
+                          Expanded(
+                            child: Text(
+                              'Time Distribution',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Text(
                             'Most active: ${analytics.mostActiveTime}',
                             style: Theme.of(context).textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -196,9 +200,10 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       ...analytics.timeOfDay.entries.map((entry) => Column(
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width: 140,
+                                width: 130,
                                 child: Text(
                                   entry.key,
                                   style: Theme.of(context).textTheme.bodyMedium,
@@ -211,9 +216,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                   minHeight: 8,
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 24),
                               SizedBox(
-                                width: 60,
+                                width: 45,
                                 child: Text(
                                   entry.value.toString(),
                                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -222,7 +227,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 16),
                         ],
                       )),
                     ],
