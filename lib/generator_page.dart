@@ -12,7 +12,25 @@ import 'package:share_plus/share_plus.dart';
 
 import 'app_theme.dart';
 
-enum QRType { text, email, url, phone, wifi, vCard }
+enum QRType {
+  text,
+  email,
+  url,
+  phone,
+  wifi,
+  vCard,
+  // New Types
+  calendar,
+  location,
+  cryptocurrency,
+  socialMedia,
+  menu,
+  businessCard,
+  pdf,
+  audio,
+  whatsapp,
+  telegram,
+}
 
 class GeneratorPage extends StatefulWidget {
   const GeneratorPage({super.key});
@@ -25,12 +43,35 @@ class _GeneratorPageState extends State<GeneratorPage> {
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _wifiNameController = TextEditingController();
   final TextEditingController _wifiPasswordController = TextEditingController();
+  final TextEditingController _eventTitleController = TextEditingController();
+  final TextEditingController _eventLocationController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
+  final TextEditingController _cryptoAddressController = TextEditingController();
   String data = '';
   final GlobalKey _qrKey = GlobalKey();
   QRType selectedQRType = QRType.text;
   Color qrColor = Colors.black;
   Color backgroundColor = Colors.white;
   bool _obscurePassword = true;
+
+  List<String> qrTemplates = [
+    'Classic',
+    'Modern',
+    'Minimal',
+    'Rounded',
+    'Dotted',
+    'Custom Logo',
+    'Gradient',
+    'Pattern',
+  ];
+  String selectedTemplate = 'Classic';
+
+  double cornerRadius = 0.0;
+  double dotScale = 1.0;
+  bool useGradient = false;
+  Color gradientColor1 = Colors.blue;
+  Color gradientColor2 = Colors.purple;
 
   List<Map<String, dynamic>> qrTypes = [
     {'type': QRType.text, 'icon': Icons.text_fields, 'label': 'Text'},
@@ -150,6 +191,18 @@ END:VCARD''';
       default:
         return _textController.text;
     }
+  }
+
+  Future<void> _generateBulkQRCodes() async {
+    // Implementation for bulk generation
+  }
+
+  Future<void> _exportAsVector() async {
+    // Implementation for SVG export
+  }
+
+  Future<void> _addCustomLogo() async {
+    // Implementation for custom logo
   }
 
   @override
@@ -406,6 +459,39 @@ END:VCARD''';
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTemplateSelector() {
+    return Container(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: qrTemplates.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => setState(() => selectedTemplate = qrTemplates[index]),
+            child: Container(
+              margin: EdgeInsets.all(8),
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: selectedTemplate == qrTemplates[index]
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                children: [
+                  Icon(Icons.qr_code),
+                  Text(qrTemplates[index]),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

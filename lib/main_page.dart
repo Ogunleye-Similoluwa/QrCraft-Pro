@@ -6,6 +6,10 @@ import 'package:qr_master/setting_page.dart';
 import 'app_theme.dart';
 import 'generator_page.dart';
 import 'history_screen.dart';
+import 'features/business_card/business_card_page.dart';
+
+import 'features/batch_processing/batch_processing_sheet.dart';
+import 'features/analytics/analytics_page.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -21,7 +25,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -43,7 +47,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'QR Master',
+                    'QR Hub',
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   GestureDetector(
@@ -85,6 +89,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 labelColor: Theme.of(context).primaryColor,
                 unselectedLabelColor: Colors.grey,
                 indicatorSize: TabBarIndicatorSize.tab,
+                isScrollable: true,
                 dividerColor: Colors.transparent,
                 indicatorPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 indicator: BoxDecoration(
@@ -100,39 +105,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   fontWeight: FontWeight.w500,
                 ),
                 tabs: [
-                  Tab(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.qr_code, size: 20),
-                        const SizedBox(width: 4),
-                        const Text('Generate'),
-                      ],
-                    ),
-                  ),
-                  Tab(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.qr_code_scanner, size: 20),
-                        const SizedBox(width: 4),
-                        const Text('Scan'),
-                      ],
-                    ),
-                  ),
-                  Tab(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.history, size: 20),
-                        const SizedBox(width: 4),
-                        const Text('History'),
-                      ],
-                    ),
-                  ),
+                  _buildTab(Icons.qr_code, 'Generate'),
+                  _buildTab(Icons.qr_code_scanner, 'Scan'),
+                  _buildTab(Icons.business, 'Business Card'),
+                  _buildTab(Icons.analytics, 'Analytics'),
+                  _buildTab(Icons.history, 'History'),
                 ],
               ),
             ),
@@ -142,6 +119,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 children: const [
                   GeneratorPage(),
                   ScannerPage(),
+                  BusinessCardPage(),
+                  AnalyticsPage(),
                   HistoryPage(),
                 ],
               ),
@@ -149,6 +128,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ],
         ),
       ),
+      floatingActionButton: _buildFloatingActionButton(),
+    );
+  }
+
+  Widget _buildTab(IconData icon, String label) {
+    return Tab(
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 4),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  Widget? _buildFloatingActionButton() {
+    if (_tabController.index == 0) {
+      return FloatingActionButton(
+        onPressed: () => _showBatchProcessingDialog(),
+        child: const Icon(Icons.add_box),
+      );
+    }
+    return null;
+  }
+
+  void _showBatchProcessingDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => const BatchProcessingSheet(),
     );
   }
 
