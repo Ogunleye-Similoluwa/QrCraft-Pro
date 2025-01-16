@@ -198,23 +198,31 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                           Row(
                             children: [
                               SizedBox(
-                                width: 120,
-                                child: Text(entry.key),
+                                width: 140,
+                                child: Text(
+                                  entry.key,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                               ),
                               Expanded(
                                 child: LinearProgressIndicator(
                                   value: entry.value / analytics.scans,
                                   backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                                  minHeight: 8,
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              Text(
-                                '${entry.value}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              SizedBox(
+                                width: 60,
+                                child: Text(
+                                  entry.value.toString(),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.right,
+                                ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                         ],
                       )),
                     ],
