@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_master/services/analytics_service.dart';
 import 'app_theme.dart';
 import 'main_page.dart';
 import 'theme_provider.dart';
-
+  import 'services/analytics_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

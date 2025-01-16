@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/scanner_page.dart';
-import 'package:qr_master/setting_page.dart';
+  import 'scanner_page.dart';
+  import 'setting_page.dart';
 
 
 import 'app_theme.dart';
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'QR Hub',
+                    'QR CraftPro',
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   GestureDetector(

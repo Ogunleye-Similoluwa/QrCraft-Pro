@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_master/services/analytics_service.dart';
+  import '../../services/analytics_service.dart';
 import 'qr_analytics.dart';
 
 class AnalyticsPage extends StatefulWidget {
