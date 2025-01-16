@@ -158,11 +158,6 @@ class _GeneratorPageState extends State<GeneratorPage> {
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _wifiNameController = TextEditingController();
   final TextEditingController _wifiPasswordController = TextEditingController();
-  final TextEditingController _eventTitleController = TextEditingController();
-  final TextEditingController _eventLocationController = TextEditingController();
-  final TextEditingController _latitudeController = TextEditingController();
-  final TextEditingController _longitudeController = TextEditingController();
-  final TextEditingController _cryptoAddressController = TextEditingController();
   String data = '';
   final GlobalKey _qrKey = GlobalKey();
   QRType selectedQRType = QRType.text;
