@@ -58,9 +58,9 @@ QrCraft Pro is a powerful and feature-rich QR code generator and scanner applica
 
 <p align="center">
   <img src="screenshots/generator.png" width="200" alt="Generator"/>
-  <img src="screenshots/scanner.png" width="200" alt="Scanner"/>
+  <img src="screenshots/processing.png" width="200" alt="Processing"/>
   <img src="screenshots/analytics.png" width="200" alt="Analytics"/>
-  <img src="screenshots/customization.png" width="200" alt="Customization"/>
+  <img src="screenshots/business.png" width="200" alt="Business Card"/>
 </p>
 
 ## 🛠️ Technical Details
